@@ -1,0 +1,11 @@
+main {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  section {
+    border: 1px solid lightgrey;
+    padding: 8px;
+    margin: 8px;
+    border-radius: 10px;
+    width: 40%;
+  }
