@@ -1,10 +1,12 @@
-const BASE_URL = "https://fsa-crud-2aa9294fe819.herokuapp.com/api/2308-ACC-ET-WEB-PT-A/events";
+const BASE_URL =
+  "https://fsa-crud-2aa9294fe819.herokuapp.com/api/2308-ACC-ET-WEB-PT-A/events";
 
 const mainEl = document.querySelector("main");
 const formEl = document.querySelector("form");
 const partyLabel = document.querySelector("#partyLabel");
 const dateLabel = document.querySelector("#dateLabel");
 const locationLabel = document.querySelector("#locationLabel");
+const descriptionLabel = document.querySelector("#descriptionLabel");
 
 async function getEvents() {
   try {
@@ -18,18 +20,20 @@ async function getEvents() {
 }
 
 function render(events) {
-  const template = events.map(event => {
-      return (
-        `<section>
+  const template = events
+    .map((event) => {
+      //formats date
+      const eventDate = new Date(event.date).toLocaleString()
+      return `<section>
         <h2>${event.name}</h2>
         <p>${event.description}</p>
-        <p>${event.date}</p>
+        <p>${eventDate}</p>
         <p>${event.location}</p>
         <button data-id="${event.id}">Delete Party</button>
-        </section>`
-      )
-    }).join("");
-    mainEl.innerHTML = template;
+        </section>`;
+    })
+    .join("");
+  mainEl.innerHTML = template;
 }
 
 async function eventApp() {
@@ -42,7 +46,8 @@ eventApp();
 formEl.addEventListener("submit", async (event) => {
   event.preventDefault();
   try {
-    await fetch(BASE_URL, {
+    const dateIso = new Date(dateLabel.value).toISOString();
+    const response = await fetch(BASE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -50,11 +55,12 @@ formEl.addEventListener("submit", async (event) => {
       body: JSON.stringify({
         name: partyLabel.value,
         description: descriptionLabel.value,
-        Date: dateLabel.value,
-        Location: locationLabel.value,
+        date: dateIso,
+        location: locationLabel.value,
       }),
     });
-console.log("Post request complete");
+    const json = await response.json();
+    console.log("Post request complete", json);
     partyLabel.value = "";
     dateLabel.value = "";
     locationLabel.value = "";
